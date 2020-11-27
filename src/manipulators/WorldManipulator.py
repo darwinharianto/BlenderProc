@@ -110,7 +110,17 @@ class WorldManipulator(Module):
         :param world: World to modify. Type: bpy.types.World.
         :param color: RGBA color of the emitted light. Type: mathutils.Vector.
         """
-        world.node_tree.nodes["Background"].inputs['Color'].default_value = color
+        if color == "sky_texture":
+            sky_tex = bpy.data.worlds['World'].node_tree.nodes.new(type='ShaderNodeTexSky')
+            sky_tex.sky_type = "HOSEK_WILKIE"
+            sky_tex.ground_albedo = 0.9
+            sky_tex.turbidity = 2.2
+
+            back_node = bpy.data.worlds['World'].node_tree.nodes['Background']
+            bpy.data.worlds['World'].node_tree.links.new(sky_tex.outputs['Color'], back_node.inputs['Color'])
+            
+        else:
+            world.node_tree.nodes["Background"].inputs['Color'].default_value = color
 
     def _set_bg_surface_strength(self, world, strength):
         """ Sets the strength of the emitted light by the background surface.

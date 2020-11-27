@@ -48,7 +48,13 @@ class LightInterface(Module):
 
         light_data.type = config.get_string("type", 'POINT')
         light_obj.location = config.get_list("location", [0, 0, 0])
-        light_obj.rotation_euler = config.get_list("rotation", [0, 0, 0])
+        light_obj.rotation_euler = config.get_list("scale", [1, 1, 1])
+        light_obj.scale = config.get_list("rotation", [0, 0, 0])
         light_data.energy = config.get_float("energy", 10.)
         light_data.color = config.get_list("color", [1, 1, 1])[:3]
         light_data.distance = config.get_float("distance", 0)
+
+        if config.get_string("parent") == "HK010-00000_forSimu_AllCATPart.001":
+            objects = bpy.data.objects
+            a = objects[config.get_string("parent")]
+            light_obj.parent = a
