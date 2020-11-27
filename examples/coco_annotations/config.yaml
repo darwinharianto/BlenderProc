@@ -2,7 +2,7 @@
 {
   "version": 3,
   "setup": {
-    "blender_install_path": "/home_local/<env:USER>/blender/",
+    "blender_install_path": "/Applications/",
     "pip": [
       "h5py",
       "scikit-image"
@@ -27,35 +27,88 @@
     {
       "module": "manipulators.WorldManipulator",
       "config": {
-        "cf_set_world_category_id": 0  # this sets the worlds background category id to 0
+        "cf_set_world_category_id": 0,  # this sets the worlds background category id to 0
+        "use_nodes": True,
+        "cf_bg_surface_strength": 1,
+        # "cf_bg_surface_color": "sky_texture",
       }
     },
-    {
-      "module": "lighting.LightLoader",
-      "config": {
-        "lights": [
-          {
-            "type": "POINT",
-            "location": [5, -5, 5],
-            "energy": 1000
-          }
-        ]
-      }
-    },
+    # {
+    #   "module": "lighting.LightLoader",
+    #   "config": {
+    #     "lights": [
+    #       {
+    #         "type": "AREA",
+    #         "location": [0.074, 0, -0.21],
+    #         "energy": 1000,
+    #         "scale": [0.534, 0.534, 0.534],
+    #         "parent": "HK010-00000_forSimu_AllCATPart.001"
+    #       }
+    #     ]
+    #   }
+    # },
+    # {
+    #   "module": "manipulators.MaterialManipulator",
+    #   "config": {
+    #     "selector": {
+    #       "provider": "getter.Material",
+    #       "conditions": {
+    #         "name": "Material.001"
+    #       }
+    #     },
+    #     "cf_color_link_to_displacement": 1.5,
+    #     "cf_set_Metallic": 0.825,
+    #     "cf_set_Specular": 0.5
+    #   }
+    # },
     {
       "module": "camera.CameraLoader",
       "config": {
         "path": "<args:0>",
         "file_format": "location rotation/value",
         "default_cam_param": {
-          "fov": 1
+          "cam_K": [517.799858, 0.000000, 303.876287, 0.000000, 514.807834, 238.157119, 0.000000, 0.000000, 1.000000],
+          "resolution_x": 640,
+          "resolution_y": 480
         }
       }
     },
     {
+      "module": "object.ObjectLoader",
+      "config": {
+        "path": "<args:3>",
+        "file_format": "location rotation/value",
+        "obj_name": "HK010-00000 forSimu AllCATPart.001"
+      }
+    },
+    # {
+    #   "module": "manipulators.EntityManipulator",
+    #   "config": {
+    #     "selector": {
+    #       "provider": "getter.Entity",
+    #       "conditions": { 
+    #         "name": "HK010-00000_forSimu_AllCATPart.001", # with this you can only select the sphere
+    #         "type": "MESH"  # this guarantees that the object is a mesh, and not for example a camera
+    #       }
+    #     },
+    #     "cp_category_id": 1
+    #   }
+    # },
+    # {
+    #   "module": "object.ObjectLoader",
+    #   "config": {
+    #     "path": "<args:0>",
+    #     "file_format": "location rotation/value",
+    #     "default_cam_param": {
+    #       "fov": 1
+    #     }
+    #   }
+    # },
+    {
       "module": "renderer.RgbRenderer",
       "config": {
-        "output_key": "colors"
+        "output_key": "colors",
+        "transparent_background": True, 
       }
     },
     {
@@ -67,6 +120,8 @@
     {
       "module": "writer.CocoAnnotationsWriter",
       "config": {
+        "mask_encoding_format": "polygon",
+        "supercategory": "nihonbashi"
       }
     }
   ]
