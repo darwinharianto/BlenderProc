@@ -73,13 +73,13 @@ class CameraLoader(CameraInterface):
                                                      self.config.get_string("file_format", ""),
                                                      self.number_of_arguments_per_parameter)
         
-        import json
-        KRT = self.get_K_P_from_blender(bpy.context.scene.camera)
-        with open('./camera.txt', 'w') as f:
-            text = "" 
-            for i in range(len(KRT["K"])):
-                text += f"{KRT['K'][i][0]} {KRT['K'][i][1]} {KRT['K'][i][2]} \n"
-            f.write(text)
+        # import json
+        # KRT = self.get_K_P_from_blender(bpy.context.scene.camera)
+        # with open('./camera.txt', 'w') as f:
+        #     text = "" 
+        #     for i in range(len(KRT["K"])):
+        #         text += f"{KRT['K'][i][0]} {KRT['K'][i][1]} {KRT['K'][i][2]} \n"
+        #     f.write(text)
 
 
     def _add_cam_pose(self, config):
@@ -91,14 +91,9 @@ class CameraLoader(CameraInterface):
         # Collect camera object
         cam_ob = bpy.context.scene.camera
 
-        # Store new cam pose as next frame
-        frame_id = bpy.context.scene.frame_end
-        self._insert_key_frames(cam, cam_ob, frame_id)
-        bpy.context.scene.frame_end = frame_id + 1
-
-
         # Set extrinsics from config
         self._set_cam_extrinsics(cam_ob, config)
+
 
 
     # we could also define the camera matrix

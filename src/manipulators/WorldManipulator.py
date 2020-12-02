@@ -110,14 +110,37 @@ class WorldManipulator(Module):
         :param world: World to modify. Type: bpy.types.World.
         :param color: RGBA color of the emitted light. Type: mathutils.Vector.
         """
+        import os
         if color == "sky_texture":
-            sky_tex = bpy.data.worlds['World'].node_tree.nodes.new(type='ShaderNodeTexSky')
+            sky_tex = world.node_tree.nodes.new(type='ShaderNodeTexSky')
             sky_tex.sky_type = "HOSEK_WILKIE"
             sky_tex.ground_albedo = 0.9
             sky_tex.turbidity = 2.2
 
-            back_node = bpy.data.worlds['World'].node_tree.nodes['Background']
-            bpy.data.worlds['World'].node_tree.links.new(sky_tex.outputs['Color'], back_node.inputs['Color'])
+            back_node = world.node_tree.nodes['Background']
+            world.node_tree.links.new(sky_tex.outputs['Color'], back_node.inputs['Color'])
+        
+        elif os.path.isdir(color):
+
+            random_image = self.random_image_from_folder(color)
+            img_name = os.path.basename(random_image)
+            bpy.data.images.load(random_image)
+
+            env_node = world.node_tree.nodes.new(type='ShaderNodeTexEnvironment')
+            back_node = world.node_tree.nodes['Background']
+            world.node_tree.links.new(env_node.outputs['Color'], back_node.inputs['Color'])
+
+            end_frame = bpy.context.scene.frame_end
+
+            env_node.image = bpy.data.images[img_name]
+            env_node.image.source = "SEQUENCE"
+
+            env_node.image_user.frame_duration = end_frame
+            env_node.image_user.frame_start = 1
+            env_node.image_user.frame_offset = 0
+            env_node.image_user.use_cyclic = True
+            env_node.image_user.use_auto_refresh = True
+            
             
         else:
             world.node_tree.nodes["Background"].inputs['Color'].default_value = color
@@ -129,3 +152,28 @@ class WorldManipulator(Module):
         :param strength: Strength of the emitted light. Type: float.
         """
         world.node_tree.nodes["Background"].inputs['Strength'].default_value = strength
+    
+
+    def random_image_from_folder(self, folder_name):
+        """ Get random image from folder that act as world color
+
+        :param world: World to modify. Type: bpy.types.World.
+        :param folder_name: Folder where images should be taken 
+        """
+        import os
+        import random
+
+        all_image_path = []
+
+        bg_list = os.listdir(folder_name)
+        random.shuffle(bg_list)
+
+        for i, files in enumerate(bg_list):
+            all_image_path.append(os.path.join(folder_name, files))
+            src = os.path.join(folder_name, files)
+            dst = os.path.join(folder_name, f"bg_{str(i).zfill(10)}")
+            
+            os.rename(src, dst) 
+            
+        return dst
+        
