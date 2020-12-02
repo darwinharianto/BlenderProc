@@ -24,6 +24,8 @@ python run.py examples/shapenet_with_scenenet/config.yaml <PATH_TO_SCENE_NET_OBJ
 * `<PATH_TO_ShapeNetCore.v2>`: path to the downloaded shape net core v2 dataset, get it [here](http://www.shapenet.org/) 
 * `examples/shapenet_with_scenenet/output`: path to the output directory.
 
+As this example requires a bed to be present in the scene, it will only work with the `1Bedroom/*` SceneNet scenes.
+
 ## Visualization
 
 In the output folder you will find a series of `.hdf5` containers. These can be visualized with the script:
@@ -133,19 +135,20 @@ Finally, we add a solidify modifier to get a correct physics interaction.
 "module": "object.PhysicsPositioning",
 "config": {
   "solver_iters": 30,
-  "steps_per_sec": 250,
+  "substeps_per_frame": 40,
   "min_simulation_time": 0.5,
   "max_simulation_time": 4,
   "check_object_interval": 0.25,
   "mass_scaling": True,
   "mass_factor": 2000,
-  "collision_margin": 0.00001
+  "collision_margin": 0.00001,
+  "collision_shape": "MESH"
 }
 ```
 
 We then run the physics simulation, for more information about that please see the [example/physiscs_positioning](../physics_positioning).
 The high mass factor and the small collision margin guarantee that the object does not move too much.
-Important here are the amount of `solver_iters` and `steps_per_sec` as they have to be high, as lot of objects in the ShapeNet dataset consist out of thin small pieces.
+Important here are the amount of `solver_iters` and `substeps_per_frame` as they have to be high, as lot of objects in the ShapeNet dataset consist out of thin small pieces.
 Without this they might slide into the SceneNet objects.
 
 ### CameraSampler
