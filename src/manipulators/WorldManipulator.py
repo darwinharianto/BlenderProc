@@ -136,7 +136,7 @@ class WorldManipulator(Module):
             env_node.image.source = "SEQUENCE"
 
             env_node.image_user.frame_duration = end_frame
-            env_node.image_user.frame_start = 1
+            env_node.image_user.frame_start = 0
             env_node.image_user.frame_offset = 0
             env_node.image_user.use_cyclic = True
             env_node.image_user.use_auto_refresh = True
@@ -163,6 +163,8 @@ class WorldManipulator(Module):
         import os
         import random
 
+        print("This method will change all the image name inside folder, proceed with caution")
+
         all_image_path = []
 
         bg_list = os.listdir(folder_name)
@@ -171,9 +173,20 @@ class WorldManipulator(Module):
         for i, files in enumerate(bg_list):
             all_image_path.append(os.path.join(folder_name, files))
             src = os.path.join(folder_name, files)
-            dst = os.path.join(folder_name, f"bg_{str(i).zfill(10)}")
+            dst = os.path.join(folder_name, f"temp_bg_{str(i).zfill(5)}.jpg")
+            
+            os.rename(src, dst)
+
+        bg_list = os.listdir(folder_name)
+        random.shuffle(bg_list)
+
+        # FIX THIS NAMING SCHEME
+        for i, files in enumerate(bg_list):
+            all_image_path.append(os.path.join(folder_name, files))
+            src = os.path.join(folder_name, files)
+            dst = os.path.join(folder_name, f"bg_{str(i).zfill(10)}.jpg")
             
             os.rename(src, dst) 
-            
+        
         return dst
         
