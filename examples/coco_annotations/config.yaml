@@ -1,8 +1,8 @@
-# Args: <cam_file> <obj_file> <output_dir>
+# Args: <cam_file> <obj_file> <output_dir> <obj_pose_file>
 {
   "version": 3,
   "setup": {
-    "blender_install_path": "/Applications/",
+    "blender_install_path": "/home/nizar/blender",
     "pip": [
       "h5py",
       "scikit-image"
@@ -25,41 +25,47 @@
       }
     },
     {
-      "module": "manipulators.WorldManipulator",
-      "config": {
-        "cf_set_world_category_id": 0,  # this sets the worlds background category id to 0
-        "use_nodes": True,
-        "cf_bg_surface_strength": 1,
-        "cf_bg_surface_color": "sky_texture",
-      }
-    },
-    {
       "module": "camera.CameraLoader",
       "config": {
         "path": "<args:0>",
         "file_format": "location rotation/value",
-        "default_cam_param": {
-          # "cam_K": [517.799858, 0.000000, 303.876287, 0.000000, 514.807834, 238.157119, 0.000000, 0.000000, 1.000000],
+        "intrinsics": {
+          "cam_K": [517.799858, 0.000000, 303.876287, 0.000000, 514.807834, 238.157119, 0.000000, 0.000000, 1.000000],
           "resolution_x": 640,
           "resolution_y": 480
         }
       }
     },
     {
-      "module": "object.ObjectLoader",
+      "module": "loader.ObjectLoaderV2",
       "config": {
         "path": "<args:3>",
         "file_format": "location rotation/value",
         "obj_name": "HK010-00000 forSimu AllCATPart.001",
-        "cp_category_id": 1,  # this sets the object category
-        "child": ["Area"]
+        "child": ["Area"],
+        "add_properties": {
+          "cp_category_id": "1"
+        }, 
+      } # using object loader could only be use after camera loads, because number of camera pose is the one that is used for rendered images
+    },
+    {
+      "module": "manipulators.WorldManipulator",
+      "config": {
+        "cf_set_world_category_id": 0,  # this sets the worlds background category id to 0
+        "use_nodes": True,
+        "cf_bg_surface_strength": 1,
+        # "cf_bg_surface_color": "sky_texture" , # using image folder could be use after load camera, because need to calculate how many frame is needed
+        "cf_bg_surface_color": "/home/nizar/Desktop/workspace/pvnet-rendering/data/SUN/JPEGImages", # using image folder could be use after load camera, because need to calculate how many frame is needed
+        # "cf_bg_surface_color": {
+        #   "image_folder": ["/Users/darwinharianto/Documents/Git/git_training_lab/python/pvnet-rendering/data/SUN/JPEGImages"]
+        #   }, # using image folder could be use after load camera, because need to calculate how many frame is needed
       }
     },
     {
       "module": "renderer.RgbRenderer",
       "config": {
         "output_key": "colors",
-        "transparent_background": True, 
+        # "transparent_background": True, 
       }
     },
     {
