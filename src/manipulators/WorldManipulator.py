@@ -136,7 +136,7 @@ class WorldManipulator(Module):
             env_node.image.source = "SEQUENCE"
 
             env_node.image_user.frame_duration = end_frame
-            env_node.image_user.frame_start = 1
+            env_node.image_user.frame_start = 0
             env_node.image_user.frame_offset = 0
             env_node.image_user.use_cyclic = True
             env_node.image_user.use_auto_refresh = True
@@ -171,7 +171,7 @@ class WorldManipulator(Module):
         for i, files in enumerate(bg_list):
             all_image_path.append(os.path.join(folder_name, files))
             src = os.path.join(folder_name, files)
-            dst = os.path.join(folder_name, f"bg_{str(i).zfill(10)}")
+            dst = os.path.join(folder_name, f"bg_{str(i).zfill(10)}.jpg")
             
             os.rename(src, dst) 
             
