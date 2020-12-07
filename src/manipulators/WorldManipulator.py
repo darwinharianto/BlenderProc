@@ -163,7 +163,19 @@ class WorldManipulator(Module):
         import os
         import random
 
+        print("This method will change all the image name inside folder, proceed with caution")
+
         all_image_path = []
+
+        bg_list = os.listdir(folder_name)
+        random.shuffle(bg_list)
+
+        for i, files in enumerate(bg_list):
+            all_image_path.append(os.path.join(folder_name, files))
+            src = os.path.join(folder_name, files)
+            dst = os.path.join(folder_name, f"temp_bg_{str(i).zfill(10)}.jpg")
+            
+            os.rename(src, dst)
 
         bg_list = os.listdir(folder_name)
         random.shuffle(bg_list)
@@ -174,6 +186,6 @@ class WorldManipulator(Module):
             dst = os.path.join(folder_name, f"bg_{str(i).zfill(10)}.jpg")
             
             os.rename(src, dst) 
-            
+        
         return dst
         
