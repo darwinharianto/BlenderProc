@@ -2,7 +2,7 @@
 {
   "version": 3,
   "setup": {
-    "blender_install_path": "/home/nizar/blender",
+    "blender_install_path": "/home/<env:USER>/blender/",
     "pip": [
       "h5py",
       "scikit-image"
@@ -55,7 +55,7 @@
         "use_nodes": True,
         "cf_bg_surface_strength": 1,
         # "cf_bg_surface_color": "sky_texture" , # using image folder could be use after load camera, because need to calculate how many frame is needed
-        "cf_bg_surface_color": "/home/nizar/Desktop/workspace/pvnet-rendering/data/SUN/JPEGImages", # using image folder could be use after load camera, because need to calculate how many frame is needed
+        "cf_bg_surface_color": "/home/doors/workspace/oobayashi/image_without_nihonbashi/images_tes", # using image folder could be use after load camera, because need to calculate how many frame is needed
         # "cf_bg_surface_color": {
         #   "image_folder": ["/Users/darwinharianto/Documents/Git/git_training_lab/python/pvnet-rendering/data/SUN/JPEGImages"]
         #   }, # using image folder could be use after load camera, because need to calculate how many frame is needed
@@ -65,7 +65,8 @@
       "module": "renderer.RgbRenderer",
       "config": {
         "output_key": "colors",
-        # "transparent_background": True, 
+        "image_type": "PNG",
+        "transparent_background": True, 
       }
     },
     {

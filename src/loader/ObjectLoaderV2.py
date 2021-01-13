@@ -63,9 +63,9 @@ class ObjectLoaderV2(LoaderInterface):
         
 
     def _add_obj_pose(self, config):
-        """ Adds new cam pose + intrinsics according to the given configuration.
+        """ Adds new obj pose according to the given configuration.
 
-        :param config: A configuration object which contains all parameters relevant for the new cam pose.
+        :param config: A configuration object which contains all parameters relevant for the new obj pose.
         """
 
         # Collect camera object
@@ -89,13 +89,9 @@ class ObjectLoaderV2(LoaderInterface):
                             for key in fc.keyframe_points :
                                 filled_frame.append(key.co[0])
                     
-                    for i in range(end_frame):
-                        if i not in set(filled_frame):
-                            print(f"inserting new keyframe for obj at {i}")
-                            self._insert_key_frames(obj, obj_ob, i)
-                            break
-                        else:
-                            continue
+                    print(f"inserting new keyframe for obj at {int(max(filled_frame)+1)}")
+                    self._insert_key_frames(obj, obj_ob, int(max(filled_frame))+1)
+
                 except AttributeError:
                     self._insert_key_frames(obj, obj_ob, start_frame)
 
