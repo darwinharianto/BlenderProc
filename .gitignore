@@ -18,3 +18,9 @@ resources/pix3d
 docs/build/
 !docs/source/index.rst
 docs/source/*rst
+camera_positions_*
+hsr_*
+*nihonbashi*
+output_*
+combined*
+scene*
