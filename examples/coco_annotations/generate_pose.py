@@ -8,6 +8,10 @@ from scipy.spatial.transform import Rotation as R
 import random
 import math
 
+num_points= 2
+
+
+
 def get_random_translation(
     r_range: (float, float)=(1, 10),
     theta_range: (float, float)=(-math.pi/3, math.pi/3),
@@ -46,7 +50,6 @@ def get_random_pose(
 
 robot_translation = []
 robot_rotation = []
-num_points= 10000
 
 for i in range(num_points):
     robot_rotation.append(get_random_rotation(roll_range=(-0.01,0.01), yaw_range=(-np.pi, np.pi), pitch_range=(-0.01, 0.01)))

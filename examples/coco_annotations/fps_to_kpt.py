@@ -18,7 +18,7 @@ def project(xyz, K, RT):
 
     return xy
 
-def custom_to_coco(data_root, iterator):
+def custom_to_coco(data_root):
 
     # K = np.loadtxt(os.path.join(data_root, '../../camera.txt'))
     K = np.loadtxt(os.path.join(data_root, 'camera.txt'))
@@ -32,11 +32,11 @@ def custom_to_coco(data_root, iterator):
         'corner_3d': corner_3d,
     }
 
-    with open(f'./output_{iterator}/coco_data/coco_annotations.json', 'r') as f:
+    with open(f'./output/coco_data/new_coco_annotations3.json', 'r') as f:
         coco_json = json.loads(f.read())
 
-    new_coco_json = record_ann(model_meta, coco_json, iterator)
-    anno_path = os.path.join(data_root, f'./output_{iterator}/coco_data/new_coco_annotations3.json')
+    new_coco_json = record_ann(model_meta, coco_json)
+    anno_path = os.path.join(data_root, f'./output/coco_data/new_coco_annotations3.json')
     with open(anno_path, 'w') as f:
         json.dump(new_coco_json, f)
 
@@ -67,7 +67,7 @@ def get_3x4_RT_matrix_from_blender(location, rotation):
                 R_world2cv[2][:] + (T_world2cv[2],)))
     return RT
 
-def record_ann(model_meta, coco_json, iterator):
+def record_ann(model_meta, coco_json):
     data_root = model_meta['data_root']
     fps_3d = model_meta['fps_3d']
     K = model_meta['K']
@@ -75,11 +75,11 @@ def record_ann(model_meta, coco_json, iterator):
     center_3d = np.mean(model_meta['corner_3d'], axis=0)
 
     # get object pose
-    pose_path_obj = os.path.join(data_root, f"nihonbashi_positions_{iterator}")
+    pose_path_obj = os.path.join(data_root, f"nihonbashi_positions")
     pose_obj = np.loadtxt(pose_path_obj)
 
     # get cam pose
-    pose_path_cam = os.path.join(data_root, f"camera_positions_{iterator}")
+    pose_path_cam = os.path.join(data_root, f"camera_positions")
     pose_cam = np.loadtxt(pose_path_cam)
 
     # iterate over frame for each pose
@@ -103,7 +103,7 @@ def record_ann(model_meta, coco_json, iterator):
         corner_2d = project(corner_3d, K, world_to_camera_pose)
         center_2d = project(center_3d, K, world_to_camera_pose)
 
-        rgb_path = os.path.join(data_root, f'/output_{iterator}/coco_data/rgb_{str(pose_iterator).zfill(4)}.png')
+        rgb_path = os.path.join(data_root, f'/output/coco_data/rgb_{str(pose_iterator).zfill(4)}.png')
         
         # search for category id This need fixes
         for category in coco_json["categories"]:
@@ -134,6 +134,10 @@ def record_ann(model_meta, coco_json, iterator):
                 while i <= len(kpt_3d_flat):
                     kpt_3d_flat.insert(i, 2)
                     i += 4
+                for i in range(len(annot["segmentation"])):
+                    if (annot["segmentation"][i][:2] == annot["segmentation"][i][-2:]):
+                        annot["segmentation"][i] = annot["segmentation"][i][:-2]
+                        print("segmentation need to be fixed")
                 annot.update({"keypoints": kpt_2d_flat, 
                               "num_keypoints": len(fps_2d),
                               "keypoints_3d": kpt_3d_flat,
@@ -149,7 +153,7 @@ def record_ann(model_meta, coco_json, iterator):
         
         if True:
             import cv2
-            image = cv2.imread(os.path.join(data_root, f"output_{iterator}/coco_data/rgb_{str(pose_iterator).zfill(4)}.png"))
+            image = cv2.imread(os.path.join(data_root, f"output/coco_data/rgb_{str(pose_iterator).zfill(4)}.png"))
             for item in fps_2d:
                 image = cv2.circle(image, (int(item[0]), int(item[1])), radius=5, color=(0, 0, 255), thickness=-1)
 
@@ -164,5 +168,4 @@ if __name__ == "__main__":
     
     path = os.getcwd()
 
-    for iterator in range(1,6):
-        custom_to_coco(path, iterator)
+    custom_to_coco(path)
